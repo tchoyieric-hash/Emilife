@@ -1,1 +1,629 @@
+<escape><!DOCTYPE html>
 
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="EmiLife — Organise tes projets, habitudes, finances et objectifs dans un seul espace.">
+  <title>EmiLife — Modern Life OS</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090b;
+      --panel: #18181b;
+      --panel2: #202024;
+      --border: #303036;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --green: #10b981;
+      --indigo: #818cf8;
+      --red: #fb7185;
+    }* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+
+.app { min-height: 100vh; }
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 5%;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(9,9,11,.94);
+  backdrop-filter: blur(12px);
+  z-index: 5;
+}
+
+.brand { font-size: 23px; font-weight: 800; letter-spacing: -.8px; }
+.brand span { color: var(--green); }
+.date { color: var(--muted); font-size: 12px; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0,1fr);
+  max-width: 1400px;
+  margin: auto;
+}
+
+aside {
+  padding: 24px 14px;
+  border-right: 1px solid var(--border);
+  min-height: calc(100vh - 65px);
+}
+
+.nav-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 10px;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 12px;
+  text-align: left;
+  border-radius: 9px;
+  margin-bottom: 4px;
+}
+
+.nav-btn.active, .nav-btn:hover {
+  color: var(--green);
+  background: #10251e;
+}
+
+main { padding: 28px; min-width: 0; }
+h1 { margin: 0 0 8px; font-size: clamp(25px,4vw,36px); }
+h2 { font-size: 18px; margin: 0 0 16px; }
+p { color: var(--muted); line-height: 1.6; }
+.muted { color: var(--muted); }
+.green { color: var(--green); }
+.small { font-size: 12px; }
+
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 9px;
+}
+
+.btn.primary {
+  background: var(--green);
+  color: #042f24;
+  border-color: var(--green);
+  font-weight: 700;
+}
+
+.btn:hover { filter: brightness(1.1); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 19px;
+  min-width: 0;
+}
+
+.metric { font-size: 27px; font-weight: 800; margin: 12px 0 4px; }
+.metric-label { color: var(--muted); font-size: 13px; }
+.section { display: none; }
+.section.active { display: block; }
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.item:last-child { border-bottom: 0; }
+.item-content { flex: 1; min-width: 0; }
+.item-title { font-weight: 600; overflow-wrap: anywhere; }
+.item-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #132d25;
+  color: var(--green);
+  font-size: 11px;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 18px;
+}
+
+input, textarea, select {
+  width: 100%;
+  min-width: 0;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px;
+}
+
+textarea { resize: vertical; }
+.form-row input { flex: 1; }
+
+.check {
+  accent-color: var(--green);
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+}
+
+.progress {
+  height: 7px;
+  background: #303036;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress > div {
+  height: 100%;
+  background: var(--green);
+  width: 0%;
+}
+
+.empty { padding: 22px 0; color: var(--muted); font-size: 13px; }
+.danger { color: var(--red); }
+footer { color: var(--muted); font-size: 11px; padding: 25px 0 5px; }
+
+@media(max-width: 900px) {
+  .grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .layout { grid-template-columns: 1fr; }
+  aside {
+    min-height: 0;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-label { display: none; }
+  .nav-list { display: flex; gap: 5px; min-width: max-content; }
+  .nav-btn { width: auto; margin: 0; padding: 10px; }
+  main { padding: 20px 14px; }
+}
+
+@media(max-width: 560px) {
+  .two-col { grid-template-columns: 1fr; }
+  .grid { gap: 9px; }
+  .card { padding: 14px; }
+  .metric { font-size: 23px; }
+  .form-row { flex-wrap: wrap; }
+  header { padding: 14px; }
+}
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">Emi<span>Life</span></div>
+    <div class="date" id="today"></div>
+  </header>  <div class="layout">
+    <aside>
+      <div class="nav-label">Espace de travail</div>
+      <nav class="nav-list" aria-label="Navigation principale">
+        <button class="nav-btn active" data-page="dashboard">◈ Cockpit</button>
+        <button class="nav-btn" data-page="projects">▣ Projets & tâches</button>
+        <button class="nav-btn" data-page="habits">✦ Habitudes</button>
+        <button class="nav-btn" data-page="finances">◉ Finances</button>
+        <button class="nav-btn" data-page="review">☑ Bilan quotidien</button>
+      </nav>
+    </aside><main>
+  <section class="section active" id="dashboard">
+    <div class="topline">
+      <div>
+        <h1>Ton cockpit de vie.</h1>
+        <p>Avance chaque jour vers ce qui compte vraiment.</p>
+      </div>
+      <button class="btn primary" data-go="projects">+ Nouvelle tâche</button>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="metric-label">Tâches terminées</div>
+        <div class="metric" id="metricTasks">0/0</div>
+        <div class="small green">Progression du jour</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Habitudes du jour</div>
+        <div class="metric" id="metricHabits">0/0</div>
+        <div class="small green">Petits pas, grands résultats</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Dépenses enregistrées</div>
+        <div class="metric" id="metricExpenses">0 FCFA</div>
+        <div class="small muted">Total des dépenses saisies</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Minuteur Pomodoro</div>
+        <div class="metric" id="timer">25:00</div>
+        <button class="btn" id="timerButton">Démarrer</button>
+        <button class="btn" id="timerReset">Réinitialiser</button>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h2>Priorités du jour</h2>
+        <div id="dashboardTasks"></div>
+        <div class="progress"><div id="taskProgress"></div></div>
+      </div>
+      <div class="card">
+        <h2>Ton cap — North Star</h2>
+        <p>Quelle est la chose la plus importante à accomplir aujourd'hui ?</p>
+        <textarea id="northStar" rows="3" placeholder="Ex. Terminer le lancement de mon projet..."></textarea>
+        <button class="btn primary" id="saveNorthStar" style="margin-top:10px">Enregistrer mon cap</button>
+        <p class="small" id="northStarMessage"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="topline">
+      <div><h1>Projets & tâches</h1><p>Transforme tes objectifs en actions concrètes.</p></div>
+    </div>
+    <div class="card">
+      <h2>Ajouter une tâche</h2>
+      <form class="form-row" id="taskForm">
+        <input id="taskTitle" placeholder="Que dois-tu accomplir ?" required maxlength="160">
+        <button class="btn primary" type="submit">Ajouter</button>
+      </form>
+      <div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+        <div><label for="taskFilter" class="small muted">Afficher</label>
+          <select id="taskFilter">
+            <option value="all">Toutes les tâches</option>
+            <option value="todo">À faire</option>
+            <option value="done">Terminées</option>
+          </select>
+        </div>
+        <div><label for="projectName" class="small muted">Nom du projet</label>
+          <input id="projectName" placeholder="Ex. Lancement EmiLife">
+        </div>
+      </div>
+      <div id="taskList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="habits">
+    <div class="topline">
+      <div><h1>Habitudes</h1><p>Construis une routine qui te ressemble.</p></div>
+    </div>
+    <div class="card">
+      <h2>Créer une habitude</h2>
+      <form class="form-row" id="habitForm">
+        <input id="habitTitle" placeholder="Ex. Lire 10 minutes" required maxlength="100">
+        <button class="btn primary" type="submit">Ajouter</button>
+      </form>
+      <div id="habitList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="finances">
+    <div class="topline">
+      <div><h1>Finances</h1><p>Observe tes entrées et sorties d'argent.</p></div>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div class="card"><div class="metric-label">Revenus</div><div class="metric green" id="incomeTotal">0</div></div>
+      <div class="card"><div class="metric-label">Dépenses</div><div class="metric" id="expenseTotal">0</div></div>
+      <div class="card"><div class="metric-label">Solde enregistré</div><div class="metric" id="balanceTotal">0</div></div>
+    </div>
+    <div class="card">
+      <h2>Ajouter une opération</h2>
+      <form id="financeForm">
+        <div class="form-row">
+          <input id="financeLabel" placeholder="Description" required maxlength="120">
+          <input id="financeAmount" type="number" min="1" step="1" placeholder="Montant FCFA" required>
+        </div>
+        <div class="form-row">
+          <select id="financeType">
+            <option value="expense">Dépense</option>
+            <option value="income">Revenu</option>
+          </select>
+          <button class="btn primary" type="submit">Enregistrer</button>
+        </div>
+      </form>
+      <div id="financeList"></div>
+    </div>
+  </section>
+
+  <section class="section" id="review">
+    <div class="topline">
+      <div><h1>Bilan quotidien</h1><p>Prends du recul et prépare la suite.</p></div>
+    </div>
+    <div class="card">
+      <form id="reviewForm">
+        <label for="wins">Mes victoires du jour</label>
+        <textarea id="wins" rows="3" placeholder="Qu'est-ce qui s'est bien passé ?"></textarea>
+        <br><br>
+        <label for="obstacles">Mes obstacles</label>
+        <textarea id="obstacles" rows="3" placeholder="Qu'est-ce qui m'a freiné ?"></textarea>
+        <br><br>
+        <label for="tomorrow">Mes 3 priorités pour demain</label>
+        <textarea id="tomorrow" rows="3" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+        <br><br>
+        <button class="btn primary" type="submit">Enregistrer le bilan</button>
+      </form>
+      <p id="reviewMessage"></p>
+    </div>
+  </section>
+
+  <footer>EmiLife · Organise ta vie, construis ton avenir. Tes données de cette version sont stockées sur cet appareil.</footer>
+</main>
+
+  </div>
+</div><script>
+(() => {
+  "use strict";
+
+  const KEY = "emilife.mvp.v1";
+  const $ = id => document.getElementById(id);
+  const money = value => new Intl.NumberFormat("fr-FR", {
+    maximumFractionDigits: 0
+  }).format(value) + " FCFA";
+
+  const todayKey = new Date().toISOString().slice(0, 10);
+  $("today").textContent = new Date().toLocaleDateString("fr-FR", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+
+  const freshState = () => ({
+    tasks: [],
+    habits: [],
+    finances: [],
+    northStar: "",
+    reviews: {}
+  });
+
+  let state;
+  try {
+    state = JSON.parse(localStorage.getItem(KEY)) || freshState();
+  } catch {
+    state = freshState();
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch {
+      alert("Le stockage local est indisponible. Vérifie l'espace libre de ton navigateur.");
+    }
+    render();
+  }
+
+  function safeText(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;",
+      '"': "&quot;", "'": "&#39;"
+    }[char]));
+  }
+
+  function renderTasks() {
+    const filter = $("taskFilter")?.value || "all";
+    const filtered = state.tasks.filter(task =>
+      filter === "all" || (filter === "done" ? task.done : !task.done)
+    );
+
+    $("taskList").innerHTML = filtered.length ? filtered.map(task => `
+      <div class="item">
+        <input class="check" type="checkbox" data-task="${task.id}" ${task.done ? "checked" : ""} aria-label="Terminer la tâche">
+        <div class="item-content">
+          <div class="item-title" style="${task.done ? "text-decoration:line-through;color:#a1a1aa" : ""}">${safeText(task.title)}</div>
+          <div class="item-meta">${safeText(task.project || "Tâche personnelle")}</div>
+        </div>
+        <button class="btn danger" data-delete-task="${task.id}" aria-label="Supprimer">×</button>
+      </div>
+    `).join("") : '<div class="empty">Aucune tâche ici. Ajoute ta première action.</div>';
+
+    const done = state.tasks.filter(task => task.done).length;
+    $("metricTasks").textContent = `${done}/${state.tasks.length}`;
+    $("taskProgress").style.width = `${state.tasks.length ? done / state.tasks.length * 100 : 0}%`;
+
+    const pending = state.tasks.filter(task => !task.done).slice(0, 5);
+    $("dashboardTasks").innerHTML = pending.length ? pending.map(task => `
+      <div class="item">
+        <input class="check" type="checkbox" data-task="${task.id}" aria-label="Terminer la tâche">
+        <div class="item-content"><div class="item-title">${safeText(task.title)}</div></div>
+      </div>
+    `).join("") : '<div class="empty">Toutes tes tâches sont terminées, ou tu n’en as pas encore ajouté.</div>';
+  }
+
+  function renderHabits() {
+    $("habitList").innerHTML = state.habits.length ? state.habits.map(habit => {
+      const completed = habit.logs.includes(todayKey);
+      const streak = habit.logs.includes(todayKey) ? habit.logs.length : habit.logs.length;
+      return `
+        <div class="item">
+          <input class="check" type="checkbox" data-habit="${habit.id}" ${completed ? "checked" : ""} aria-label="Valider l'habitude">
+          <div class="item-content">
+            <div class="item-title">${safeText(habit.title)}</div>
+            <div class="item-meta">🔥 ${streak} validation(s) cumulée(s)</div>
+          </div>
+          <button class="btn danger" data-delete-habit="${habit.id}" aria-label="Supprimer">×</button>
+        </div>`;
+    }).join("") : '<div class="empty">Ajoute une habitude pour commencer ta série.</div>';
+
+    const total = state.habits.length;
+    const done = state.habits.filter(habit => habit.logs.includes(todayKey)).length;
+    $("metricHabits").textContent = `${done}/${total}`;
+  }
+
+  function renderFinances() {
+    const incomes = state.finances.filter(item => item.type === "income")
+      .reduce((sum, item) => sum + item.amount, 0);
+    const expenses = state.finances.filter(item => item.type === "expense")
+      .reduce((sum, item) => sum + item.amount, 0);
+
+    $("incomeTotal").textContent = money(incomes);
+    $("expenseTotal").textContent = money(expenses);
+    $("balanceTotal").textContent = money(incomes - expenses);
+    $("metricExpenses").textContent = money(expenses);
+
+    $("financeList").innerHTML = state.finances.length ? [...state.finances].reverse().map(item => `
+      <div class="item">
+        <div class="item-content">
+          <div class="item-title">${safeText(item.label)}</div>
+          <div class="item-meta">${item.type === "income" ? "Revenu" : "Dépense"} · ${safeText(item.date)}</div>
+        </div>
+        <div class="${item.type === "income" ? "green" : "danger"}">${item.type === "income" ? "+" : "−"}${money(item.amount)}</div>
+        <button class="btn danger" data-delete-finance="${item.id}" aria-label="Supprimer">×</button>
+      </div>
+    `).join("") : '<div class="empty">Aucune opération enregistrée.</div>';
+  }
+
+  function renderReview() {
+    const review = state.reviews[todayKey] || {};
+    $("wins").value = review.wins || "";
+    $("obstacles").value = review.obstacles || "";
+    $("tomorrow").value = review.tomorrow || "";
+  }
+
+  function render() {
+    $("northStar").value = state.northStar || "";
+    renderTasks();
+    renderHabits();
+    renderFinances();
+    renderReview();
+  }
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(nav => nav.classList.remove("active"));
+      $(button.dataset.page).classList.add("active");
+      button.classList.add("active");
+    });
+  });
+
+  document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelector('[data-page="projects"]').click();
+      $("taskTitle").focus();
+    });
+  });
+
+  $("taskForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const title = $("taskTitle").value.trim();
+    if (!title) return;
+    state.tasks.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      title,
+      project: $("projectName").value.trim(),
+      done: false,
+      createdAt: new Date().toISOString()
+    });
+    $("taskTitle").value = "";
+    save();
+  });
+
+  $("taskFilter").addEventListener("change", renderTasks);
+
+  $("habitForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const title = $("habitTitle").value.trim();
+    if (!title) return;
+    state.habits.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      title, logs: []
+    });
+    $("habitTitle").value = "";
+    save();
+  });
+
+  $("financeForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const label = $("financeLabel").value.trim();
+    const amount = Number($("financeAmount").value);
+    if (!label || !Number.isFinite(amount) || amount <= 0) return;
+
+    state.finances.push({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      label, amount,
+      type: $("financeType").value,
+      date: todayKey
+    });
+    $("financeLabel").value = "";
+    $("financeAmount").value = "";
+    save();
+  });
+
+  document.addEventListener("change", event => {
+    const el = event.target;
+    if (el.dataset.task) {
+      const task = state.tasks.find(item => item.id === el.dataset.task);
+      if (task) task.done = el.checked;
+      save();
+    }
+    if (el.dataset.habit) {
+      const habit = state.habits.find(item => item.id === el.dataset.habit);
+      if (habit) {
+        habit.logs = habit.logs.filter(date => date !== todayKey);
+        if (el.checked) habit.logs.push(todayKey);
+      }
+      save();
+    }
+  });
+
+  document.addEventListener("click", event => {
+    const el = event.target.closest("button");
+    if (!el) return;
+    if (el.dataset.deleteTask) {
+      state.tasks = state.tasks.filter(item => item.id !== el.dataset.deleteTask);
+      save();
+    }
+    if (el.dataset.deleteHabit) {
+      state.habits = state.habits.filter(item => item.id !== el.dataset.deleteHabit);
+      save();
+    }
+    if (el.dataset.deleteFinance) {
+      state.fi
